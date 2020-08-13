@@ -46,6 +46,8 @@ class AnswerSerializer(serializers.HyperlinkedModelSerializer):
         try:
             if q_pk := kwargs['context']['request'].parser_context.get('kwargs', {}).get('question_pk'):
                 if q := Question.objects.get(pk=q_pk):
+                    self.choice_objects = q.choices.all()
+                    self.fields['choice'].queryset = self.fields['choices'].queryset = self.choice_objects
                     missed_fields = [field for key, field in self.type_fields.items() if key != q.question_type]
                     for field in missed_fields:
                         self.fields.pop(field)
@@ -92,6 +94,7 @@ class AnswerSerializer(serializers.HyperlinkedModelSerializer):
         lookup_field='pk',
         many=True,
         read_only=False,
+        # TODO ограничить выборку
         queryset=Choice.objects.all(),
     )
 

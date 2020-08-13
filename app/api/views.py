@@ -1,8 +1,8 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions
-from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -65,18 +65,14 @@ class CreateAnswerView(CreateAPIView):
         user = self.request.user.pk or 0
         try:
             question = Question.objects.get(pk=self.kwargs.get('question_pk'))
-        except Question.DoesNotExist:
-            return Response(
-                {'status': 'details'},
-                status=status.HTTP_404_NOT_FOUND,
+            poll = Poll.objects.get(pk=self.kwargs.get('poll_pk'))
+            serializer.save(
+                poll=poll,
+                question=question,
+                user=user,
             )
-
-        poll = Poll.objects.get(pk=self.kwargs.get('poll_pk'))
-        serializer.save(
-            poll=poll,
-            question=question,
-            user=user,
-        )
+        except Exception:
+            raise ValidationError(detail="Error 400, Bad Request", code=400)
 
 
 class AnswerViewSet(viewsets.ModelViewSet):
