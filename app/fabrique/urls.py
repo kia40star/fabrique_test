@@ -18,9 +18,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
+from rest_auth.views import LoginView, LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login/', LoginView.as_view(), name='rest_login'),
+    path('logout/', LogoutView.as_view(), name='rest_logout'),
     path('', include('api.urls', namespace='api')),
     path('favicon.ico',
          RedirectView.as_view(url='/static/img/favicon.png'),

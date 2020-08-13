@@ -71,10 +71,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_auth',
+    'rest_framework.authtoken',
+    'django_filters',
     'debug_toolbar',
     'rest_framework',
 
     'api',
+    'pollsapp',
 ]
 
 MIDDLEWARE = [
@@ -101,6 +105,12 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 50,
 }
+
+REST_AUTH_SERIALIZERS = {
+    "LOGIN_SERIALIZER": "api.serializers.CustomUserLoginSerializer",
+}
+
+ACCOUNT_LOGOUT_ON_GET = True
 
 TEMPLATES = [
     {
